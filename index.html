@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J Driver Admin Panel</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0b1315;
+            color: #ffffff;
+            margin: 0;
+            padding: 15px;
+        }
+        .container {
+            max-width: 420px;
+            margin: auto;
+            background: #141f23;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border: 1px solid #1e2c32;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h3 {
+            margin: 0;
+            color: #00ff88;
+            letter-spacing: 1px;
+            font-size: 16px;
+        }
+        .admin-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+        .subtitle {
+            font-size: 12px;
+            color: #8a9ba8;
+            margin-bottom: 20px;
+        }
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #8a9ba8;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            background: #1a272c;
+            border: 1px solid #28383f;
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: #00ff88;
+        }
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .day-btn {
+            background: #1a272c;
+            border: 1px solid #28383f;
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .day-btn.active {
+            background: #00ff88;
+            color: #0b1315;
+            border-color: #00ff88;
+        }
+        .selected-expiry-box {
+            background: #102a22;
+            border: 1px solid #1b4d3e;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .selected-expiry-title {
+            font-size: 10px;
+            color: #8a9ba8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+        .selected-expiry-value {
+            font-size: 15px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+        .auto-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00ff88, #00b359);
+            color: #0b1315;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,255,136,0.3);
+            transition: 0.2s;
+        }
+        .auto-btn:active {
+            transform: scale(0.98);
+        }
+        .result-card {
+            background: #1a272c;
+            border: 1px solid #28383f;
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+        }
+        .result-text {
+            background: #0b1315;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #00ff88;
+            word-break: break-all;
+            margin-bottom: 10px;
+            border: 1px solid #1e2c32;
+            white-space: pre-line;
+        }
+        .toast {
+            background: #00ff88;
+            color: #0b1315;
+            font-size: 13px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            font-weight: bold;
+            animation: fadeIn 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h3>NINJA-MR</h3>
+        <span style="font-size: 12px; color: #8a9ba8;">MR-MEHEDY ☀️</span>
+    </div>
+
+    <div class="admin-title">J Driver Panel</div>
+    <div class="subtitle">Smart Auto-Paste, Generate & Copy Panel.</div>
+
+    <div class="section-label">Customer Device ID</div>
+    <div class="input-group">
+        <input type="text" id="hwid" placeholder="Paste or Auto-detect ID">
+    </div>
+
+    <div class="section-label">Select Expiry Validity</div>
+    <div class="days-grid">
+        <div class="day-btn" onclick="setDays(1, '1 Day (Trial)', this)">1 Day</div>
+        <div class="day-btn active" onclick="setDays(30, '1 Month', this)">1 Month</div>
+        <div class="day-btn" onclick="setDays(60, '2 Months', this)">2 Months</div>
+        <div class="day-btn" onclick="setDays(90, '3 Months', this)">3 Months</div>
+        <div class="day-btn" onclick="setDays(180, '6 Months', this)">6 Months</div>
+        <div class="day-btn" onclick="setDays(365, '1 Year', this)">1 Year</div>
+    </div>
+
+    <div class="selected-expiry-box">
+        <div class="selected-expiry-title">Current Selected Package</div>
+        <div class="selected-expiry-value" id="selectedExpiryText">1 Month (Ready)</div>
+    </div>
+
+    <!-- এক ক্লিকেই পেস্ট, জেনারেট এবং কপি হয়ে যাবে -->
+    <button class="auto-btn" onclick="autoGenerateAndCopy()">⚡ Auto Generate & Copy</button>
+
+    <div class="result-card" id="resultCard">
+        <div class="section-label" style="margin-bottom: 5px;">Last Generated Output</div>
+        <div class="result-text" id="generatedKey"></div>
+    </div>
+
+    <div class="toast" id="toastMsg">✅ Copied to Clipboard! Ready to send.</div>
+</div>
+
+<script>
+    let selectedDays = 30;
+    let selectedLabel = "1 Month";
+
+    function setDays(days, label, element) {
+        document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        selectedDays = days;
+        selectedLabel = label;
+        document.getElementById('selectedExpiryText').innerText = label + " (Ready)";
+    }
+
+    async function autoGenerateAndCopy() {
+        let hwidInput = document.getElementById('hwid');
+        
+        try {
+            // ক্লিপবোর্ড থেকে কাস্টমারের আইডি অটো রিড করার চেষ্টা করবে
+            let clipboardText = await navigator.clipboard.readText();
+            if (clipboardText && clipboardText.trim().length > 5) {
+                hwidInput.value = clipboardText.trim();
+            }
+        } catch (err) {
+            // পারমিশন না থাকলে বক্সে যা আছে সেটাই নিবে
+        }
+
+        let hwid = hwidInput.value.trim();
+        if(!hwid) {
+            alert('ক্লিপবোর্ডে কোনো Device ID পাওয়া যায়নি বা বক্স খালি আছে! দয়া করে আগে আইডি কপি করুন।');
+            return;
+        }
+
+        // এক্সপায়ারি ডেট ক্যালকুলেশন
+        let currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + selectedDays);
+        let expiryDateStr = currentDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+        // পাসওয়ার্ড জেনারেশন
+        let randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+        let passKey = "JDRV-" + randomStr + "-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+        let finalOutput = passKey + "\nHWID: " + hwid + "\nValidity: " + selectedLabel + " (Exp: " + expiryDateStr + ")";
+
+        document.getElementById('generatedKey').innerText = finalOutput;
+        document.getElementById('resultCard').style.display = "block";
+
+        // অটো ক্লিপবোর্ডে কপি করা
+        navigator.clipboard.writeText(finalOutput).then(function() {
+            let toast = document.getElementById('toastMsg');
+            toast.style.display = "block";
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 3000);
+        });
+    }
+</script>
+
+</body>
+</html>
