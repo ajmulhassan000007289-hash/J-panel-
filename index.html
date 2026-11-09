@@ -135,6 +135,7 @@
             padding: 15px;
             border-radius: 12px;
             display: none;
+            margin-bottom: 20px;
         }
         .result-text {
             background: #0b1315;
@@ -147,6 +148,31 @@
             margin-bottom: 10px;
             border: 1px solid #1e2c32;
             white-space: pre-line;
+        }
+        /* নতুন ইউজার স্ট্যাটাস বক্স */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .stat-card {
+            background: #1a272c;
+            border: 1px solid #28383f;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-title {
+            font-size: 10px;
+            color: #8a9ba8;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00ff88;
         }
         .toast {
             background: #00ff88;
@@ -166,8 +192,8 @@
 
 <div class="container">
     <div class="header">
-        <h3>NINJA-MR</h3>
-        <span style="font-size: 12px; color: #8a9ba8;">MR-MEHEDY ☀️</span>
+        <h3>Sahon</h3>
+        <span style="font-size: 12px; color: #8a9ba8;">Admin Panel ☀️</span>
     </div>
 
     <div class="admin-title">J Driver Panel</div>
@@ -193,12 +219,28 @@
         <div class="selected-expiry-value" id="selectedExpiryText">1 Month (Ready)</div>
     </div>
 
-    <!-- এক ক্লিকেই পেস্ট, জেনারেট এবং কপি হয়ে যাবে -->
     <button class="auto-btn" onclick="autoGenerateAndCopy()">⚡ Auto Generate & Copy</button>
 
     <div class="result-card" id="resultCard">
         <div class="section-label" style="margin-bottom: 5px;">Last Generated Output</div>
         <div class="result-text" id="generatedKey"></div>
+    </div>
+
+    <!-- নিচের খালি জায়গার জন্য ইউজার স্ট্যাটাস অপশন -->
+    <div class="section-label">User Statistics Overview</div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-title">Total</div>
+            <div class="stat-value" id="totalUsers">24</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Active</div>
+            <div class="stat-value" id="activeUsers" style="color: #00ff88;">19</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Expired</div>
+            <div class="stat-value" id="expiredUsers" style="color: #ff4d4d;">5</div>
+        </div>
     </div>
 
     <div class="toast" id="toastMsg">✅ Copied to Clipboard! Ready to send.</div>
@@ -220,14 +262,11 @@
         let hwidInput = document.getElementById('hwid');
         
         try {
-            // ক্লিপবোর্ড থেকে কাস্টমারের আইডি অটো রিড করার চেষ্টা করবে
             let clipboardText = await navigator.clipboard.readText();
             if (clipboardText && clipboardText.trim().length > 5) {
                 hwidInput.value = clipboardText.trim();
             }
-        } catch (err) {
-            // পারমিশন না থাকলে বক্সে যা আছে সেটাই নিবে
-        }
+        } catch (err) {}
 
         let hwid = hwidInput.value.trim();
         if(!hwid) {
@@ -235,12 +274,10 @@
             return;
         }
 
-        // এক্সপায়ারি ডেট ক্যালকুলেশন
         let currentDate = new Date();
         currentDate.setDate(currentDate.getDate() + selectedDays);
         let expiryDateStr = currentDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-        // পাসওয়ার্ড জেনারেশন
         let randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
         let passKey = "JDRV-" + randomStr + "-" + Math.random().toString(36).substring(2, 10).toUpperCase();
 
@@ -249,7 +286,12 @@
         document.getElementById('generatedKey').innerText = finalOutput;
         document.getElementById('resultCard').style.display = "block";
 
-        // অটো ক্লিপবোর্ডে কপি করা
+        // সাকসেসফুল জেনারেশনে টোটাল ও অ্যাক্টিভ ইউজার ১ বাড়িয়ে আপডেট করে দেওয়া
+        let totalElem = document.getElementById('totalUsers');
+        let activeElem = document.getElementById('activeUsers');
+        totalElem.innerText = parseInt(totalElem.innerText) + 1;
+        activeElem.innerText = parseInt(activeElem.innerText) + 1;
+
         navigator.clipboard.writeText(finalOutput).then(function() {
             let toast = document.getElementById('toastMsg');
             toast.style.display = "block";
