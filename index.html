@@ -149,7 +149,6 @@
             border: 1px solid #1e2c32;
             white-space: pre-line;
         }
-        /* নতুন ইউজার স্ট্যাটাস বক্স */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -222,11 +221,10 @@
     <button class="auto-btn" onclick="autoGenerateAndCopy()">⚡ Auto Generate & Copy</button>
 
     <div class="result-card" id="resultCard">
-        <div class="section-label" style="margin-bottom: 5px;">Last Generated Output</div>
+        <div class="section-label" style="margin-bottom: 5px;">Last Generated Key Output</div>
         <div class="result-text" id="generatedKey"></div>
     </div>
 
-    <!-- নিচের খালি জায়গার জন্য ইউজার স্ট্যাটাস অপশন -->
     <div class="section-label">User Statistics Overview</div>
     <div class="stats-grid">
         <div class="stat-card">
@@ -243,7 +241,7 @@
         </div>
     </div>
 
-    <div class="toast" id="toastMsg">✅ Copied to Clipboard! Ready to send.</div>
+    <div class="toast" id="toastMsg">✅ License Key Copied! Ready to send.</div>
 </div>
 
 <script>
@@ -278,21 +276,23 @@
         currentDate.setDate(currentDate.getDate() + selectedDays);
         let expiryDateStr = currentDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-        let randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
-        let passKey = "JDRV-" + randomStr + "-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+        // শুধুমাত্র মূল লাইসেন্স কি জেনারেট করা
+        let part1 = Math.random().toString(36).substring(2, 8).toUpperCase();
+        let part2 = Math.random().toString(36).substring(2, 10).toUpperCase();
+        let pureLicenseKey = "JDRV-" + part1 + "-" + part2;
 
-        let finalOutput = passKey + "\nHWID: " + hwid + "\nValidity: " + selectedLabel + " (Exp: " + expiryDateStr + ")";
+        let displayOutput = pureLicenseKey + "\nHWID: " + hwid + "\nValidity: " + selectedLabel + " (Exp: " + expiryDateStr + ")";
 
-        document.getElementById('generatedKey').innerText = finalOutput;
+        document.getElementById('generatedKey').innerText = displayOutput;
         document.getElementById('resultCard').style.display = "block";
 
-        // সাকসেসফুল জেনারেশনে টোটাল ও অ্যাক্টিভ ইউজার ১ বাড়িয়ে আপডেট করে দেওয়া
         let totalElem = document.getElementById('totalUsers');
         let activeElem = document.getElementById('activeUsers');
         totalElem.innerText = parseInt(totalElem.innerText) + 1;
         activeElem.innerText = parseInt(activeElem.innerText) + 1;
 
-        navigator.clipboard.writeText(finalOutput).then(function() {
+        // কাস্টমার অ্যাপে আনলক করার জন্য শুধুমাত্র মূল লাইসেন্স কি-টা কপি করা
+        navigator.clipboard.writeText(pureLicenseKey).then(function() {
             let toast = document.getElementById('toastMsg');
             toast.style.display = "block";
             setTimeout(() => {
